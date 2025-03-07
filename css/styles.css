@@ -1,0 +1,264 @@
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: linear-gradient(to right, #009a00, #5ad0c4);
+    color: white;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* Game section */
+#game {
+    margin-top: 20px;
+}
+
+#cake {
+    width: 150px;
+    cursor: pointer;
+    animation: float 2s infinite;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+/* Message box */
+#message-box {
+    margin-top: 20px;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+/* Confetti canvas */
+#confetti-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Memory gallery */
+#memory-section {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.memory-gallery {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.memory-gallery img {
+    width: 150px;
+    height: 150px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+    object-fit: cover;
+}
+
+.memory-gallery img:hover {
+    transform: scale(1.1);
+}
+
+.memory-gallery figure {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin: 10px;
+}
+
+.memory-gallery figcaption {
+    margin-top: 8px;
+    font-size: 1em;
+    color: rgb(229, 245, 4);
+    max-width: 150px;
+    word-wrap: break-word;
+    line-height: 1.4;
+}
+
+/* Slideshow */
+#slideshow {
+    text-align: center;
+    margin-top: 20px;
+    display: none;
+}
+
+#slideshow img {
+    width: 90%;
+    max-width: 400px;
+    height: 300px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.5s;
+    object-fit: cover;
+}
+
+#caption {
+    margin-top: 15px;
+    font-size: 1.5em;
+    color: rgb(229, 245, 4);
+    text-align: center;
+    word-wrap: break-word;
+    max-width: 90%;
+    line-height: 1.4;
+}
+
+/* Final message */
+#final-message {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #ff6f61;
+    margin-top: 20px;
+    display: none;
+    animation: fadeIn 2s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Balloons and stars */
+#balloon, #star {
+    font-size: 1.5em;
+    cursor: pointer;
+    display: none;
+    animation: float 3s infinite ease-in-out;
+}
+
+/* Floating characters */
+.floating-character2 {
+    position: absolute;
+    font-size: 1.5em;
+    animation: float 5s linear infinite;
+    z-index: 10;
+}
+
+/* Cake with candles */
+#cake-with-candles {
+    margin-top: 20px;
+}
+
+.candle {
+    display: inline-block;
+    font-size: 2em;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.candle-blown-out {
+    text-decoration: line-through;
+    color: gray;
+}
+
+/* Responsive Design */
+
+/* Tablet and larger screens */
+@media (min-width: 1024px) {
+    #caption {
+        font-size: 1.8em;
+        margin-top: 20px;
+    }
+
+    .memory-gallery figcaption {
+        font-size: 1.2em;
+        max-width: 180px;
+    }
+}
+
+/* Mobile screens */
+@media (max-width: 768px) {
+    #cake {
+        width: 120px;
+    }
+
+    #message-box {
+        font-size: 1em;
+    }
+
+    .memory-gallery img {
+        width: calc(100% / 2 - 10px);
+        max-width: 120px;
+        height: auto;
+    }
+
+    .memory-gallery figcaption {
+        font-size: 1em;
+        max-width: 120px;
+    }
+
+    #slideshow img {
+        height: 250px;
+    }
+
+    #caption {
+        font-size: 1.2em;
+    }
+
+    #balloon, #star {
+        font-size: 1.2em;
+    }
+
+    .floating-character2 {
+        font-size: 1.2em;
+    }
+}
+
+/* Extra-small mobile screens */
+@media (max-width: 480px) {
+    #cake {
+        width: 100px;
+    }
+
+    #message-box {
+        font-size: 0.9em;
+    }
+
+    .memory-gallery img {
+        width: calc(100% / 3 - 5px);
+        max-width: 100px;
+        height: auto;
+    }
+
+    .memory-gallery figcaption {
+        font-size: 0.9em;
+        max-width: 100px;
+    }
+
+    #slideshow img {
+        height: 200px;
+    }
+
+    #caption {
+        font-size: 1em;
+    }
+
+    #balloon, #star {
+        font-size: 1em;
+    }
+
+    .floating-character2 {
+        font-size: 1em;
+    }
+}
