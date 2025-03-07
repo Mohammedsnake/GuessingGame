@@ -135,7 +135,7 @@ function showBalloonAndStar() {
 
 // Balloon and star click/hover events
 balloon.addEventListener('click', () => {
-    alert("You always as bright as a star!");
+    alert("You are always as bright as a star!");
 });
 
 star.addEventListener('mouseover', () => {
