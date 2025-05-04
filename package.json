@@ -1,0 +1,24 @@
+{
+  "name": "nexiq",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "vite": "^6.3.4",
+    "vite-plugin-live-reload": "^3.0.4"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^4.4.1",
+    "firebase": "^11.6.1"
+  }
+}
