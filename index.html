@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NexiQ - Your AI Assistant</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -21,9 +22,9 @@
                 <!-- Conversations will be loaded here -->
             </div>
             <div class="sidebar-footer">
-                <button id="new-chat-btn"><i class="fas fa-plus"></i> New Chat</button>
-                <button id="auth-btn"><i class="fas fa-sign-in-alt"></i> Sign In</button>
-                <button id="logout-btn" style="display: none;"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
+                <button id="new-chat-btn" aria-label="New chat"><i class="fas fa-plus"></i> New Chat</button>
+                <button id="auth-btn" aria-label="Sign in"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+                <button id="logout-btn" aria-label="Sign out" style="display: none;"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
             </div>
         </div>
         
@@ -46,14 +47,14 @@
             
             <div class="chat-input">
                 <div class="input-container">
-                    <textarea id="message-input" placeholder="Message NexiQ..." rows="1"></textarea>
-                    <button id="send-btn"><i class="fas fa-paper-plane"></i></button>
+                    <textarea id="message-input" placeholder="Message NexiQ..." rows="1" aria-label="Type your message"></textarea>
+                    <button id="send-btn" aria-label="Send message"><i class="fas fa-paper-plane"></i></button>
                 </div>
                 <p class="disclaimer">NexiQ may produce inaccurate information about people, places, or facts.</p>
             </div>
         </div>
     </div>
 
-    <script type="module" src="/src/app.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
