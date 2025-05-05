@@ -9,7 +9,9 @@ import {
     query,
     where,
     orderBy,
-    onSnapshot
+    onSnapshot,
+    doc,
+    updateDoc
 } from '/src/firebase-config.js';
 
 // DOM Elements
@@ -58,12 +60,12 @@ function setupEventListeners() {
     // New conversation
     newChatBtn.addEventListener('click', startNewConversation);
     
-    // Suggestion buttons
-    document.querySelectorAll('.suggestion-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+    // Suggestion buttons (event delegation)
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('suggestion-btn')) {
             messageInput.value = e.target.textContent;
             messageInput.focus();
-        });
+        }
     });
 }
 
@@ -77,7 +79,7 @@ function checkAuthState() {
             loadConversations();
             startNewConversation();
         } else {
-            // No user is signed in
+            // No user signed in
             currentUser = null;
             resetUI();
         }
@@ -144,14 +146,6 @@ function startNewConversation() {
             </div>
         </div>
     `;
-    
-    // Reattach event listeners to suggestion buttons
-    document.querySelectorAll('.suggestion-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            messageInput.value = e.target.textContent;
-            messageInput.focus();
-        });
-    });
 }
 
 // Load user's conversations
@@ -212,45 +206,22 @@ async function sendMessage() {
     messageInput.value = '';
     messageInput.style.height = 'auto';
     
-    // Create new conversation if none exists
-    if (!activeConversationId) {
-        const conversationRef = await addDoc(collection(db, 'conversations'), {
-            userId: currentUser.uid,
-            title: message.length > 30 ? message.substring(0, 30) + '...' : message,
-            lastUpdated: new Date()
-        });
-        activeConversationId = conversationRef.id;
-        currentConversation.textContent = message.length > 30 ? message.substring(0, 30) + '...' : message;
-    }
-    
-    // Save user message to Firestore
-    await addDoc(collection(db, 'conversations', activeConversationId, 'messages'), {
-        text: message,
-        sender: 'user',
-        timestamp: new Date()
-    });
-    
-    // Update conversation last updated time
-    await updateDoc(doc(db, 'conversations', activeConversationId), {
-        lastUpdated: new Date()
-    });
-    
-    // Show typing indicator
-    showTypingIndicator();
-    
-    // Generate AI response (simplified - replace with actual AI API call)
-    setTimeout(async () => {
-        const aiResponse = generateAIResponse(message);
-        // Remove typing indicator
-        removeTypingIndicator();
+    try {
+        // Create new conversation if none exists
+        if (!activeConversationId) {
+            const conversationRef = await addDoc(collection(db, 'conversations'), {
+                userId: currentUser.uid,
+                title: message.length > 30 ? message.substring(0, 30) + '...' : message,
+                lastUpdated: new Date()
+            });
+            activeConversationId = conversationRef.id;
+            currentConversation.textContent = message.length > 30 ? message.substring(0, 30) + '...' : message;
+        }
         
-        // Add AI response to UI
-        addMessageToChat(aiResponse, 'ai');
-        
-        // Save AI response to Firestore
+        // Save user message to Firestore
         await addDoc(collection(db, 'conversations', activeConversationId, 'messages'), {
-            text: aiResponse,
-            sender: 'ai',
+            text: message,
+            sender: 'user',
             timestamp: new Date()
         });
         
@@ -258,7 +229,43 @@ async function sendMessage() {
         await updateDoc(doc(db, 'conversations', activeConversationId), {
             lastUpdated: new Date()
         });
-    }, 1000);
+        
+        // Show typing indicator
+        showTypingIndicator();
+        
+        // Generate AI response
+        setTimeout(async () => {
+            try {
+                const aiResponse = generateAIResponse(message);
+                
+                // Remove typing indicator
+                removeTypingIndicator();
+                
+                // Add AI response to UI
+                addMessageToChat(aiResponse, 'ai');
+                
+                // Save AI response to Firestore
+                await addDoc(collection(db, 'conversations', activeConversationId, 'messages'), {
+                    text: aiResponse,
+                    sender: 'ai',
+                    timestamp: new Date()
+                });
+                
+                // Update conversation last updated time
+                await updateDoc(doc(db, 'conversations', activeConversationId), {
+                    lastUpdated: new Date()
+                });
+            } catch (error) {
+                console.error('Error generating AI response:', error);
+                removeTypingIndicator();
+                addMessageToChat("Sorry, I encountered an error. Please try again.", 'ai');
+            }
+        }, 1000);
+    } catch (error) {
+        console.error('Error sending message:', error);
+        removeTypingIndicator();
+        alert('Error sending message. Please try again.');
+    }
 }
 
 // Add message to chat UI
@@ -270,8 +277,6 @@ function addMessageToChat(text, sender, timestamp) {
         <div class="message-time">${timestamp ? formatTime(timestamp) : 'Just now'}</div>
     `;
     chatMessages.appendChild(messageDiv);
-    
-    // Scroll to bottom
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
@@ -286,8 +291,6 @@ function showTypingIndicator() {
         <div class="typing-dot"></div>
     `;
     chatMessages.appendChild(typingDiv);
-    
-    // Scroll to bottom
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
@@ -304,24 +307,36 @@ function formatTime(date) {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-// Simple AI response generator (replace with actual AI API)
+// Enhanced AI response generator
 function generateAIResponse(userMessage) {
-    console.log("Received message:", userMessage); // Debug log
-    console.log("Lowercase version:", userMessage.toLowerCase()); // Debug log
-    
-    const responses = {
-      "hello": "Hello there! I'm NexiQ, your AI assistant. How can I help you today?",
-      "hi": "Hi there! What can I do for you?",
-      "hey": "Hey! Nice to chat with you!",
-      "default": "I'm NexiQ, your AI assistant. How can I help you today?"
-    };
-  
     const lowerMsg = userMessage.toLowerCase().trim();
-    const response = responses[lowerMsg] || responses["default"];
     
-    console.log("Selected response:", response); // Debug log
-    return response;
-  }
+    // Greetings
+    if (/^(hi|hello|hey|greetings|hola|sup|what's up)/i.test(lowerMsg)) {
+        const greetings = [
+            "Hello there! I'm NexiQ. How can I assist you today?",
+            "Hi! What can I do for you?",
+            "Hey there! Ready to help with anything you need.",
+            "Greetings! How can I be of service?"
+        ];
+        return greetings[Math.floor(Math.random() * greetings.length)];
+    }
+    
+    // Questions about capabilities
+    if (lowerMsg.includes("what can you do") || lowerMsg.includes("help with")) {
+        return "I can answer questions, provide information, help with coding, tell fun facts, and more! Try asking me anything specific.";
+    }
+    
+    // Default responses
+    const defaultResponses = [
+        "I'm not sure I understand. Could you rephrase that?",
+        "That's an interesting point. Could you tell me more?",
+        "I'm designed to assist with various topics. What specifically would you like to know?",
+        "Let me think about that... Could you ask in a different way?"
+    ];
+    
+    return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+}
 
 // Initialize the app when DOM is loaded
 document.addEventListener('DOMContentLoaded', init);

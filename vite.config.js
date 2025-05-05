@@ -4,7 +4,7 @@ import { resolve } from 'path';
 export default defineConfig({
   root: resolve(__dirname, './'),
   publicDir: resolve(__dirname, './public'),
-  base: '/NexiQ.com/',  // Matches your GitHub repo name exactly
+  base: '/NexiQ/',
   build: {
     outDir: resolve(__dirname, 'dist'),
     emptyOutDir: true,
@@ -26,10 +26,6 @@ export default defineConfig({
     hmr: {
       overlay: true
     }
-  },
-  preview: {
-    port: 4173,
-    strictPort: true
   },
   optimizeDeps: {
     include: ['firebase/app', 'firebase/auth', 'firebase/firestore']
